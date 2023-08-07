@@ -13,6 +13,8 @@ open class UIPiPView: UIView,
     AVPictureInPictureControllerDelegate,
     AVPictureInPictureSampleBufferPlaybackDelegate {
 
+    public weak var delegate: AVPictureInPictureControllerDelegate?
+
     /// Returns whether or not UIPiPView is supported.
     /// It depends on the iOS version, also note that it cannot be used with the iOS simulator.
     static public func isUIPiPViewSupported() -> Bool {
@@ -205,11 +207,21 @@ open class UIPiPView: UIView,
         _ pictureInPictureController: AVPictureInPictureController,
         failedToStartPictureInPictureWithError error: Error
     ) {
+        delegate?.pictureInPictureController?(
+            pictureInPictureController, failedToStartPictureInPictureWithError: error
+        )
     }
 
     open func pictureInPictureControllerWillStartPictureInPicture(
         _ pictureInPictureController: AVPictureInPictureController
     ) {
+        delegate?.pictureInPictureControllerWillStartPictureInPicture?(pictureInPictureController)
+    }
+
+    public func pictureInPictureControllerDidStartPictureInPicture(
+        _ pictureInPictureController: AVPictureInPictureController
+    ) {
+        delegate?.pictureInPictureControllerDidStartPictureInPicture?(pictureInPictureController)
     }
 
     /// Always call the parent when overriding this function.
@@ -218,6 +230,23 @@ open class UIPiPView: UIView,
     ) {
         refreshIntervalTimer?.invalidate()
         refreshIntervalTimer = nil
+        delegate?.pictureInPictureControllerWillStopPictureInPicture?(pictureInPictureController)
+    }
+
+    public func pictureInPictureControllerDidStopPictureInPicture(
+        _ pictureInPictureController: AVPictureInPictureController
+    ) {
+        delegate?.pictureInPictureControllerDidStopPictureInPicture?(pictureInPictureController)
+    }
+
+    public func pictureInPictureController(
+        _ pictureInPictureController: AVPictureInPictureController,
+        restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void
+    ) {
+        delegate?.pictureInPictureController?(
+            pictureInPictureController,
+            restoreUserInterfaceForPictureInPictureStopWithCompletionHandler: completionHandler
+        )
     }
 
     // MARK: AVPictureInPictureSampleBufferPlaybackDelegate

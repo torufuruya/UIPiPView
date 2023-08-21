@@ -59,9 +59,10 @@ open class UIPiPView: UIView,
         guard UIPiPView.isUIPiPViewSupported(),
             #available(iOS 15.0, *) else { return }
 
-        let session = AVAudioSession.sharedInstance()
-        try! session.setCategory(.playback, mode: .moviePlayback)
-        try! session.setActive(true)
+        /// Don't do it here since I want to manage AVAudioSession on the app side.
+//        let session = AVAudioSession.sharedInstance()
+//        try! session.setCategory(.playback, mode: .moviePlayback)
+//        try! session.setActive(true)
     }
 
     /// Starts PinP.
